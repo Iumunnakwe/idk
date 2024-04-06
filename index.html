@@ -1,26 +1,81 @@
-<!-- index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blind Mate Robot</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        section {
+            padding: 20px;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>Welcome to Blind Mate Robot</h1>
-        <div>
-            <label for="start">Start:</label>
-            <input type="text" id="start" name="start"><br><br>
-            <label for="destination">Destination:</label>
-            <input type="text" id="destination" name="destination"><br><br>
-            <button onclick="planRoute()">Plan Route</button>
-        </div>
-        <div id="routeResult"></div>
-    </div>
-
-    <script src="script.js"></script>
+    </header>
+    <nav>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#link">Download Link</a>
+    </nav>
+    <section id="about">
+        <h2>About Blind Mate Robot</h2>
+        <p>
+            The Blind Mate Robot is designed to assist blind individuals in their day-to-day activities. It provides
+            support and assistance to enhance their independence and improve their quality of life.
+        </p>
+    </section>
+    <section id="features">
+        <h2>Features</h2>
+        <ul>
+            <li>Assistance in navigation</li>
+            <li>Object recognition</li>
+            <li>Speech interaction</li>
+            <li>Real-time environment analysis</li>
+            <li>And much more...</li>
+        </ul>
+    </section>
+    <section id="link">
+        <h2>Download Blind Mate Robot</h2>
+        <p>Click <a href="https://livenjcu-my.sharepoint.com/:p:/g/personal/iumunnakwe_njcu_edu/EfvazNikNfpCml-erHgOWIYBBZHR4lVzgles7iaCWKcUjw?e=VP3piF">here</a> to download the Blind Mate Robot.</p>
+    </section>
+    <footer>
+        <p>&copy; 2024 Blind Mate Robot. All rights reserved.</p>
+    </footer>
 </body>
 </html>
