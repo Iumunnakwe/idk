@@ -53,311 +53,203 @@
     </div>
 
     <script>
-        // Your JavaScript code here
-        //generate random numbers
-        let firstNumber = parseInt(Math.random()*10);
-        let secondNumber = parseInt(Math.random()*10);
+        document.addEventListener("DOMContentLoaded", () => {
+    // Initialize buttons and sections
+    const sudokuButton = document.getElementById('sudoku-button');
+    const mathGameButton = document.getElementById('math-game-button');
+    const particleButton = document.getElementById('particle-button');
+    const musicButton = document.getElementById('music-button');
 
-        //get the total
-        let total = firstNumber + secondNumber;
+    const sudokuGame = document.getElementById('sudoku-game');
+    const mathGame = document.getElementById('math-game');
+    const particleAnimation = document.getElementById('particle-animation');
+    const musicSection = document.getElementById('music-section');
 
-        //display numbers on the canvas
-        let primary = document.getElementById('primary-number');
-        primary.innerHTML = `<p>${firstNumber}</p>`;
+    sudokuButton.addEventListener('click', () => {
+        sudokuGame.style.display = 'block';
+        mathGame.style.display = 'none';
+        particleAnimation.style.display = 'none';
+        musicSection.style.display = 'none';
+    });
 
-        let secondary = document.getElementById('secondary-number');
-        secondary.innerHTML = `<p>${secondNumber}</p>`;
+    mathGameButton.addEventListener('click', () => {
+        sudokuGame.style.display = 'none';
+        mathGame.style.display = 'block';
+        particleAnimation.style.display = 'none';
+        musicSection.style.display = 'none';
+    });
 
-        //get guess from user
-        let button = document.getElementById('btn');
+    particleButton.addEventListener('click', () => {
+        sudokuGame.style.display = 'none';
+        mathGame.style.display = 'none';
+        particleAnimation.style.display = 'block';
+        musicSection.style.display = 'none';
+    });
 
-        button.addEventListener('click', function(){
-            let guess = document.getElementById('guess').value;
-            guess = Number(guess);
-            //check answer
-            if (guess === total){
-                alert('Correct');
-                window.location.reload();
-            } else {
-                alert('Sorry. Incorrect. The correct answer was ' + total + '.');
-                window.location.reload();
-            }
-        });
+    musicButton.addEventListener('click', () => {
+        sudokuGame.style.display = 'none';
+        mathGame.style.display = 'none';
+        particleAnimation.style.display = 'none';
+        musicSection.style.display = 'block';
+    });
 
-        var numSelected = null;
-        var tileSelected = null;
+    const canvas = document.getElementById("canva");
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-        var errors = 0;
+    let particleArray = [];
+    let mouse = {
+        x: null,
+        y: null,
+        radius: (canvas.height / 80) * (canvas.width / 80)
+    };
 
-        var board = [
-            "--74916-5",
-            "2---6-3-9",
-            "-----7-1-",
-            "-586----4",
-            "--3----9-",
-            "--62--187",
-            "9-4-7---2",
-            "67-83----",
-            "81--45---"
-        ];
+    window.addEventListener('mousemove', function (e) {
+        mouse.x = e.x;
+        mouse.y = e.y;
+    });
 
-        var solution = [
-            "387491625",
-            "241568379",
-            "569327418",
-            "758619234",
-            "123784596",
-            "496253187",
-            "934176852",
-            "675832941",
-            "812945763"
-        ];
-
-        window.onload = function() {
-            setGame();
-        };
-
-        function setGame() {
-            // Digits 1-9
-            for (let i = 1; i <= 9; i++) {
-                //<div id="1" class="number">1</div>
-                let number = document.createElement("div");
-                number.id = i;
-                number.innerText = i;
-                number.addEventListener("click", selectNumber);
-                number.classList.add("number");
-                document.getElementById("digits").appendChild(number);
-            }
-
-            // Board 9x9
-            for (let r = 0; r < 9; r++) {
-                for (let c = 0; c < 9; c++) {
-                    let tile = document.createElement("div");
-                    tile.id = r.toString() + "-" + c.toString();
-                    if (board[r][c] != "-") {
-                        tile.innerText = board[r][c];
-                        tile.classList.add("tile-start");
-                    }
-                    if (r == 2 || r == 5) {
-                        tile.classList.add("horizontal-line");
-                    }
-                    if (c == 2 || c == 5) {
-                        tile.classList.add("vertical-line");
-                    }
-                    tile.addEventListener("click", selectTile);
-                    tile.classList.add("tile");
-                    document.getElementById("board").append(tile);
-                }
-            }
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x;
+            this.y = y;
+            this.directionX = directionX;
+            this.directionY = directionY;
+            this.size = size;
+            this.color = color;
         }
 
-        function selectNumber(){
-            if (numSelected != null) {
-                numSelected.classList.remove("number-selected");
-            }
-            numSelected = this;
-            numSelected.classList.add("number-selected");
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = '#F64C72';
+            ctx.fill();
         }
 
-        function selectTile() {
-            if (numSelected) {
-                if (this.innerText != "") {
-                    return;
-                }
+        update() {
+            if (this.x > canvas.width || this.x < 0) {
+                this.directionX = -this.directionX;
+            }
 
-                // "0-0" "0-1" .. "3-1"
-                let coords = this.id.split("-"); //["0", "0"]
-                let r = parseInt(coords[0]);
-                let c = parseInt(coords[1]);
+            if (this.y > canvas.height || this.y < 0) {
+                this.directionY = -this.directionY;
+            }
 
-                if (solution[r][c] == numSelected.id) {
-                    this.innerText = numSelected.id;
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < mouse.radius + this.size) {
+                if (mouse.x < this.x && this.x < canvas.width - this.size * 10) {
+                    this.x += 10;
                 }
-                else {
-                    errors += 1;
-                    document.getElementById("errors").innerText = errors;
+                if (mouse.x > this.x && this.x > this.size * 10) {
+                    this.x -= 10;
+                }
+                if (mouse.y < this.y && this.y < canvas.height - this.size * 10) {
+                    this.y += 10;
+                }
+                if (mouse.y > this.y && this.y > this.size * 10) {
+                    this.y -= 10;
                 }
             }
+
+            this.x += this.directionX;
+            this.y += this.directionY;
+            this.draw();
         }
+    }
 
-        const canvas = document.getElementById("canva");
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    function getParticles() {
+        particleArray = [];
+        let numParticles = (canvas.height * canvas.width) / 10000;
+        for (let i = 0; i < numParticles * 2; i++) {
+            let size = 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * 5) - 2.5;
+            let directionY = (Math.random() * 5) - 2.5;
+            let color = '#99738E';
 
-        // particle array to store randomised particle
-        let particleArray;
-
-        // get mouse cursor position
-        let mouse = {
-            x: null,
-            y: null,
-            radius: (canvas.height/80)*(canvas.width/80)
-        };
-
-        // every time mouse position changes get access to it
-        window.addEventListener('mousemove', function(e) {
-            mouse.x = e.x;
-            mouse.y = e.y;
-        });
-
-        // create particle so that every time we call it we get a randomised particle
-        class Particle {
-            constructor(x, y, directionX, directionY, size, color) {
-                this.x = x;
-                this.y = y;
-                // holds the number of pixel particles animate in x and y axis
-                this.directionX = directionX;
-                this.directionY = directionY;
-                this.size = size;
-                this.color = color;
-            }
-            // method to draw individual particle
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x,this.y,this.size,0,Math.PI*2,false);
-                ctx.fillStyle = '#F64C72';
-                ctx.fill();
-            }
-            // check particle position, check mouse position, move the particle, draw the particle
-            update() {
-                // if particle position is beyond the screen edge, reverse it
-                if(this.x > canvas.width || this.x < 0) {
-                    this.directionX = -this.directionX;
-                }
-
-                if(this.y > canvas.height || this.y < 0) {
-                    this.directionY = -this.directionY;
-                }
-
-                // check if current mouse position overlaps with current mouse position, i.e, collision detection
-                let opacityvalue = 1;
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let dis = Math.sqrt(dx*dx + dy*dy);
-                if(dis < mouse.radius+this.size) {
-                    if(mouse.x < this.size && this.x < canvas.width - this.size * 10) {
-                        this.x += 10;
-                    }
-                    if(mouse.x > this.x && this.x > this.size * 10) {
-                        this.x -= 10;
-                    }
-                    if(mouse.y < this.y && this.y < canvas.height - this.size * 10) {
-                        this.y += 10;
-                    }
-                    if(mouse.y > this.y && this.y > this.size * 10) {
-                        this.y -= 10;
-                    }
-                }
-                // move particles which are not colliding in a direction
-                this.x += this.directionX;
-                this.y += this.directionY;
-                // draw it
-                this.draw();
-            }
+            particleArray.push(new Particle(x, y, directionX, directionY, size, color));
         }
+    }
 
-        // function that will randomize values for each particle and push it to the particle array
-        function getParticles() {
-            particleArray = [];
-            let numParticle = (canvas.height * canvas.width)/10000;
-            for(let i=0; i<numParticle*2; i++) {
-                // let size = (Math.random()*5) + 1;
-                let size = 1;
-                let x = (Math.random() * ((innerWidth-size*2) - (size*2)) + size*2);
-                let y = (Math.random() * ((innerHeight-size*2) - (size*2)) + size*2);
-                let directionX = (Math.random()*5) - 2.5;
-                let directionY = (Math.random()*5) - 2.5;
-                let color = '#99738E';
-
-                particleArray.push(new Particle(x, y, directionX, directionY, size, color));
-            }
-        }
-
-        // check if particles are close enough to connect them with line
-        function connectPossible() {
-            let opacityvalue = 0.25;
-            for(let i=0;i<particleArray.length;i++) {
-                for(let j=i;j<particleArray.length;j++) {
-                    let distance = ((particleArray[i].x - particleArray[j].x)*(particleArray[i].x - particleArray[j].x)) + ((particleArray[i].y - particleArray[j].y)*(particleArray[i].y - particleArray[j].y));
-                    if(distance < (canvas.width/8)*(canvas.height/8)) {
-                        // opacityvalue = 1- (distance/20000);
-                        ctx.strokeStyle = 'rgba(255,255,255,'+opacityvalue+')';
-                        ctx.linewidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particleArray[i].x,particleArray[i].y);
-                        ctx.lineTo(particleArray[j].x,particleArray[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        function sunray() {
-            let opacityvalue = 1;
-            for(let i=0;i<particleArray.length;i++) {
-                let dx = mouse.x-particleArray[i].x;
-                let dy = mouse.y-particleArray[i].y;
-                let distance = Math.sqrt(dx*dx+dy*dy);
-                if(distance < mouse.radius+particleArray[i].size) {
-                    let opacityvalue = 1-(distance/20000);
-                    ctx.strokeStyle = 'rgba(0,0,0,'+opacityvalue+')';
-                    ctx.linewidth = 1;
+    function connectParticles() {
+        let opacityValue = 0.25;
+        for (let i = 0; i < particleArray.length; i++) {
+            for (let j = i; j < particleArray.length; j++) {
+                let distance = ((particleArray[i].x - particleArray[j].x) * (particleArray[i].x - particleArray[j].x)) + ((particleArray[i].y - particleArray[j].y) * (particleArray[i].y - particleArray[j].y));
+                if (distance < (canvas.width / 8) * (canvas.height / 8)) {
+                    ctx.strokeStyle = 'rgba(255,255,255,' + opacityValue + ')';
+                    ctx.lineWidth = 1;
                     ctx.beginPath();
-                    ctx.moveTo(particleArray[i].x,particleArray[i].y);
-                    ctx.lineTo(mouse.x,mouse.y);
+                    ctx.moveTo(particleArray[i].x, particleArray[i].y);
+                    ctx.lineTo(particleArray[j].x, particleArray[j].y);
                     ctx.stroke();
                 }
             }
         }
+    }
 
-        // windown resize and canvas do not stretch
-        window.addEventListener('resize', function() {
-            canvas.width = innerWidth;
-            canvas.height = innerHeight;
-            mouse.radius = (canvas.width/80)*(canvas.height/80);
-            getParticles();
-        });
-
-        // animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0,0,innerWidth,innerHeight);
-
-            for(let i=0; i<particleArray.length; i++) {
-                particleArray[i].update();
+    function sunray() {
+        let opacityValue = 1;
+        for (let i = 0; i < particleArray.length; i++) {
+            let dx = mouse.x - particleArray[i].x;
+            let dy = mouse.y - particleArray[i].y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < mouse.radius + particleArray[i].size) {
+                let opacityValue = 1 - (distance / 20000);
+                ctx.strokeStyle = 'rgba(0,0,0,' + opacityValue + ')';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(particleArray[i].x, particleArray[i].y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.stroke();
             }
-            sunray();
-            connectPossible();
         }
+    }
 
-        // mouse out event
-        window.addEventListener('mouseout', function() {
-            mouse.x = undefined;
-            mouse.y = undefined;
-        });
-
+    window.addEventListener('resize', function () {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        mouse.radius = (canvas.width / 80) * (canvas.height / 80);
         getParticles();
-        animate();
+    });
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const btns = document.querySelectorAll("[data-play]");
-            for (let i = 0; i < btns.length; i++) {
-                btns[i].addEventListener("click", () => {
-                    playMusic();
-                });
-            }
-        });
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
 
-        function playMusic() {
-            const music = new Audio(
-                "https://s3-us-west-2.amazonaws.com/s.cdpn.io/161676/music.mp3"
-            );
-
-            music.addEventListener("canplay", () => {
-                music.play();
-            });
+        for (let i = 0; i < particleArray.length; i++) {
+            particleArray[i].update();
         }
-    </script>
+        sunray();
+        connectParticles();
+    }
+
+    window.addEventListener('mouseout', function () {
+        mouse.x = undefined;
+        mouse.y = undefined;
+    });
+
+    getParticles();
+    animate();
+
+    function playMusic() {
+        const music = new Audio("https://s3-us-west-2.amazonaws.com/s.cdpn.io/161676/music.mp3");
+
+        music.addEventListener("canplay", () => {
+            music.play();
+        });
+    }
+
+    const musicBtns = document.querySelectorAll("[data-play]");
+    musicBtns.forEach(btn => {
+        btn.addEventListener("click", playMusic);
+    });
+});
+
+  </script>
 </body>
 </html>
