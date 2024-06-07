@@ -1,43 +1,125 @@
-  <a href="#link">Download Link</a>
-    </nav>
-    <section id="about">
-        <h2>About Blind Mate Robot</h2>
-        <p>
-            The Blind Mate Robot is designed to assist blind individuals in their day-to-day activities. It provides
-            support and assistance to enhance their independence and improve their quality of life.
-        </p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Welcome to Ihechineme Universe</title>
+</head>
+<body>
+    <div id="container">
+        <h1>Welcome to Ihechineme Universe</h1>
+        <p>What world would you like to travel to?</p>
+        <button id="sudoku-button">Play Sudoku</button>
+        <button id="math-game-button">Play Math Addition Game</button>
+        <button id="particle-button">Particle Animation</button>
+      <button id="music-button">Play Music</button>
 
-      <div class="robot-description">
-    <h2>Welcome to Blind Mate Robot</h2>
-    <p>Our Blind Mate robot is a cutting-edge companion designed to assist visually impaired individuals in their day-to-day lives. Equipped with advanced sensors and intelligent algorithms, our robot provides personalized assistance to enhance independence and safety.</p>
-    <h3>Key Features:</h3>
-    <ul>
-        <li><strong>Navigation Assistance:</strong> Seamlessly navigate through environments with obstacle detection and route planning capabilities.</li>
-        <li><strong>User Interaction:</strong> Interact effortlessly through speech recognition and natural language processing, ensuring intuitive communication.</li>
-        <li><strong>Data Management:</strong> Store user preferences and retrieve relevant data to tailor assistance according to individual needs.</li>
-        <li><strong>Decision Making:</strong> Analyze sensory data and prioritize tasks using sophisticated algorithms for efficient assistance.</li>
-        <li><strong>Continuous Learning:</strong> Adapt and improve over time through continuous feedback and learning mechanisms, ensuring optimal performance.</li>
-    </ul>
-    <p>Our mission is to empower visually impaired individuals by providing reliable, innovative, and user-friendly technology to support their daily activities and enhance their quality of life.</p>
-</div>
+        <!-- Sudoku Game Section -->
+        <div id="sudoku-game" style="display: none">
+            <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Let's Sudoku🧩</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js"></script>
+  </head>
 
-    </section>
-    <section id="features">
-        <h2>Features</h2>
-@@ -70,12 +80,13 @@ <h2>Features</h2>
-            <li>And much more...</li>
-        </ul>
-    </section>
+  <body>
+    <h1>Let's play Sudoku🧩</h1>
+    <hr />
+    <h3>Wrong ❌ Counts:</h3>
+    <h2 id="errors">0</h2>
 
-    <section id="link">
-        <h2>Download Blind Mate Robot</h2>
-        <p>Click <a href="https://docs.google.com/presentation/d/1b2MWzeklJSQ-62l7hQBugxholKDWL1AJqD8YK147Qkw/edit?usp=sharing">here</a> to download the Blind Mate Robot.</p>
-    </section>
-    <footer>
-        <p>&copy; 2024 Blind Mate Robot. All rights reserved.</p>
-    </footer>
-   <h2>Video demo app on Blindmate app capabilities</h2>
-       <iframe width="560" height="315" src="https://www.youtube.com/embed/C0biAdmuons?si=7Z307jgKT45ANQ9m" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+   
+    <div id="board"></div>
+    <br />
+    <div id="digits"></div>
+  </body>
+</html>
+        </div>
 
+        <!-- Math Addition Game Section -->
+        <div id="math-game" style="display: none">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="canvas">
+        <div id="primary-number">7</div>
+        <div id="add">+</div>
+        <div id="secondary-number">10</div>
+        <div id="equal">=</div>
+        <div>
+            <input type="number" id="guess">
+        </div>
+        <div>
+            <button id="btn">check</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>
+        </div>
+
+        <!-- Particle Animation Section -->
+        <div id="particle-animation" style="display: none">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle effect animation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="canva"></canvas>
+    <script src="script.js"></script>    
+</body>
+</html>
+        </div>
+             <!-- ... other HTML content ... -->
+
+<!-- Music Section -->
+<div id="music-section" style="display: none">
+    <button id="music-button" data-play>Play Music</button>
+</div>
+
+<!-- ... other HTML content ... -->
+
+<script>
+    document.getElementById('sudoku-button').addEventListener('click', function () {
+        document.getElementById('sudoku-game').style.display = 'block';
+        document.getElementById('math-game').style.display = 'none';
+        document.getElementById('particle-animation').style.display = 'none';
+    });
+
+    document.getElementById('math-game-button').addEventListener('click', function () {
+        document.getElementById('sudoku-game').style.display = 'none';
+        document.getElementById('math-game').style.display = 'block';
+        document.getElementById('particle-animation').style.display = 'none';
+    });
+
+    document.getElementById('particle-button').addEventListener('click', function () {
+        document.getElementById('sudoku-game').style.display = 'none';
+        document.getElementById('math-game').style.display = 'none';
+        document.getElementById('particle-animation').style.display = 'block';
+    });
+
+    document.getElementById('music-button').addEventListener('click', function () {
+        document.getElementById('sudoku-game').style.display = 'none';
+        document.getElementById('math-game').style.display = 'none';
+        document.getElementById('particle-animation').style.display = 'none';
+        document.getElementById('music-section').style.display = 'block';
+    });
+</script>
