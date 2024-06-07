@@ -3,8 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>Welcome to Ihechineme Universe</title>
+    <style>
+        /* Your CSS styles here */
+        body {
+            font-family: "Arial", sans-serif;
+            text-align: center;
+            background: url('https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg'); /* Replace with your galaxy/universe background image */
+            background-size: cover;
+            color: white;
+        }
+        /* Add your other CSS styles here */
+    </style>
 </head>
 <body>
     <div id="container">
@@ -13,113 +23,348 @@
         <button id="sudoku-button">Play Sudoku</button>
         <button id="math-game-button">Play Math Addition Game</button>
         <button id="particle-button">Particle Animation</button>
-      <button id="music-button">Play Music</button>
+        <button id="music-button">Play Music</button>
 
         <!-- Sudoku Game Section -->
         <div id="sudoku-game" style="display: none">
-            <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Let's Sudoku🧩</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
-  </head>
-
-  <body>
-    <h1>Let's play Sudoku🧩</h1>
-    <hr />
-    <h3>Wrong ❌ Counts:</h3>
-    <h2 id="errors">0</h2>
-
-   
-    <div id="board"></div>
-    <br />
-    <div id="digits"></div>
-  </body>
-</html>
+            <!-- Sudoku HTML content -->
+            <h1>Let's play Sudoku🧩</h1>
+            <!-- Sudoku content here -->
         </div>
 
         <!-- Math Addition Game Section -->
         <div id="math-game" style="display: none">
-            <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style.css">
-    <title>Document</title>
-</head>
-<body>
-    <div id="canvas">
-        <div id="primary-number">7</div>
-        <div id="add">+</div>
-        <div id="secondary-number">10</div>
-        <div id="equal">=</div>
-        <div>
-            <input type="number" id="guess">
-        </div>
-        <div>
-            <button id="btn">check</button>
-        </div>
-    </div>
-    <script src="app.js"></script>
-</body>
-</html>
+            <!-- Math Game HTML content -->
+            <div id="canvas">
+                <!-- Math Game content here -->
+            </div>
         </div>
 
         <!-- Particle Animation Section -->
         <div id="particle-animation" style="display: none">
-            <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Particle effect animation</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <canvas id="canva"></canvas>
-    <script src="script.js"></script>    
+            <!-- Particle Animation HTML content -->
+            <canvas id="canva"></canvas>
+        </div>
+
+        <!-- Music Section -->
+        <div id="music-section" style="display: none">
+            <button id="music-button" data-play>Play Music</button>
+        </div>
+    </div>
+
+    <script>
+        // Your JavaScript code here
+        //generate random numbers
+        let firstNumber = parseInt(Math.random()*10);
+        let secondNumber = parseInt(Math.random()*10);
+
+        //get the total
+        let total = firstNumber + secondNumber;
+
+        //display numbers on the canvas
+        let primary = document.getElementById('primary-number');
+        primary.innerHTML = `<p>${firstNumber}</p>`;
+
+        let secondary = document.getElementById('secondary-number');
+        secondary.innerHTML = `<p>${secondNumber}</p>`;
+
+        //get guess from user
+        let button = document.getElementById('btn');
+
+        button.addEventListener('click', function(){
+            let guess = document.getElementById('guess').value;
+            guess = Number(guess);
+            //check answer
+            if (guess === total){
+                alert('Correct');
+                window.location.reload();
+            } else {
+                alert('Sorry. Incorrect. The correct answer was ' + total + '.');
+                window.location.reload();
+            }
+        });
+
+        var numSelected = null;
+        var tileSelected = null;
+
+        var errors = 0;
+
+        var board = [
+            "--74916-5",
+            "2---6-3-9",
+            "-----7-1-",
+            "-586----4",
+            "--3----9-",
+            "--62--187",
+            "9-4-7---2",
+            "67-83----",
+            "81--45---"
+        ];
+
+        var solution = [
+            "387491625",
+            "241568379",
+            "569327418",
+            "758619234",
+            "123784596",
+            "496253187",
+            "934176852",
+            "675832941",
+            "812945763"
+        ];
+
+        window.onload = function() {
+            setGame();
+        };
+
+        function setGame() {
+            // Digits 1-9
+            for (let i = 1; i <= 9; i++) {
+                //<div id="1" class="number">1</div>
+                let number = document.createElement("div");
+                number.id = i;
+                number.innerText = i;
+                number.addEventListener("click", selectNumber);
+                number.classList.add("number");
+                document.getElementById("digits").appendChild(number);
+            }
+
+            // Board 9x9
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    let tile = document.createElement("div");
+                    tile.id = r.toString() + "-" + c.toString();
+                    if (board[r][c] != "-") {
+                        tile.innerText = board[r][c];
+                        tile.classList.add("tile-start");
+                    }
+                    if (r == 2 || r == 5) {
+                        tile.classList.add("horizontal-line");
+                    }
+                    if (c == 2 || c == 5) {
+                        tile.classList.add("vertical-line");
+                    }
+                    tile.addEventListener("click", selectTile);
+                    tile.classList.add("tile");
+                    document.getElementById("board").append(tile);
+                }
+            }
+        }
+
+        function selectNumber(){
+            if (numSelected != null) {
+                numSelected.classList.remove("number-selected");
+            }
+            numSelected = this;
+            numSelected.classList.add("number-selected");
+        }
+
+        function selectTile() {
+            if (numSelected) {
+                if (this.innerText != "") {
+                    return;
+                }
+
+                // "0-0" "0-1" .. "3-1"
+                let coords = this.id.split("-"); //["0", "0"]
+                let r = parseInt(coords[0]);
+                let c = parseInt(coords[1]);
+
+                if (solution[r][c] == numSelected.id) {
+                    this.innerText = numSelected.id;
+                }
+                else {
+                    errors += 1;
+                    document.getElementById("errors").innerText = errors;
+                }
+            }
+        }
+
+        const canvas = document.getElementById("canva");
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        //particle array to store randomised particle
+        let particleArray;
+        //get mouse cursor postion
+        let mouse = {
+            x: null,
+            y: null,
+            radius: (canvas.height/80)*(canvas.width/80)
+        };
+        //every time mouse position changes get access to it
+        window.addEventListener('mousemove',
+            function(e) {
+                mouse.x = e.x;
+                mouse.y = e.y;
+            }
+        );
+
+        //create particle so that every time we call it we get a randomised particle
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                //holds the number of pixel particles animate in x and y axis
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+            //method to draw individual particle
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x,this.y,this.size,0,Math.PI*2,false);
+                ctx.fillStyle = '#F64C72';
+                ctx.fill();
+            }
+            //check particle position, check mouse positon, move the particle, draw the particle
+            update() {
+                //if particle position is beyond the screen edge, reverse it
+                if(this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+
+                if(this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+
+                // check if currect mouse position overlaps with current mouse position, i.e, collision detection
+                let opacityvalue = 1;
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let dis = Math.sqrt(dx*dx + dy*dy);
+                if(dis < mouse.radius+this.size) {
+                    if(mouse.x < this.size && this.x < canvas.width - this.size * 10) {
+                        this.x += 10;
+                    }
+                    if(mouse.x > this.x && this.x > this.size * 10) {
+                        this.x -= 10;
+                    }
+                    if(mouse.y < this.y && this.y < canvas.height - this.size * 10) {
+                        this.y += 10;
+                    }
+                    if(mouse.y > this.y && this.y > this.size * 10) {
+                        this.y -= 10;
+                    }
+                }
+                //move particles which are not colliding in a direction
+                this.x += this.directionX;
+                this.y += this.directionY;
+                //draw it
+                this.draw();
+            }
+        }
+
+        //function that will randomize values for each particle and push it to the particle array
+        function getParticles() {
+            particleArray = [];
+            let numParticle = (canvas.height * canvas.width)/10000;
+            for(let i=0; i<numParticle*2; i++) {
+                // let size = (Math.random()*5) + 1;
+                let size = 1;
+                let x = (Math.random() * ((innerWidth-size*2) - (size*2)) + size*2);
+                let y = (Math.random() * ((innerHeight
+            size*2));
+            let directionX = (Math.random()*5) - 2.5;
+            let directionY = (Math.random()*5) - 2.5;
+            let color = '#99738E';
+
+            particleArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
+    }
+
+    //check if particles are close enough to connect them with line
+    function connectPossible() {
+        let opacityvalue = 0.25;
+        for(let i=0;i<particleArray.length;i++) {
+            for(let j=i;j<particleArray.length;j++) {
+                let distance = ((particleArray[i].x - particleArray[j].x)*(particleArray[i].x - particleArray[j].x)) + ((particleArray[i].y - particleArray[j].y)*(particleArray[i].y - particleArray[j].y));
+                if(distance < (canvas.width/8)*(canvas.height/8)) {
+                    // opacityvalue = 1- (distance/20000);
+                    ctx.strokeStyle = 'rgba(255,255,255,'+opacityvalue+')';
+                    ctx.linewidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particleArray[i].x,particleArray[i].y);
+                    ctx.lineTo(particleArray[j].x,particleArray[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    function sunray() {
+        let opacityvalue = 1;
+        for(let i=0;i<particleArray.length;i++) {
+            let dx = mouse.x-particleArray[i].x;
+            let dy = mouse.y-particleArray[i].y;
+            let distance = Math.sqrt(dx*dx+dy*dy);
+            if(distance < mouse.radius+particleArray[i].size) {
+                let opacityvalue = 1-(distance/20000);
+                ctx.strokeStyle = 'rgba(0,0,0,'+opacityvalue+')';
+                ctx.linewidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(particleArray[i].x,particleArray[i].y);
+                ctx.lineTo(mouse.x,mouse.y);
+                ctx.stroke();
+            }
+        }
+    }
+
+    //windown resize and canve donot streach
+    window.addEventListener('resize', 
+        function() {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            mouse.radius = (canvas.width/80)*(canvas.height/80);
+            getParticles();
+        }
+    );
+
+    //animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0,0,innerWidth,innerHeight);
+
+        for(let i=0; i<particleArray.length; i++) {
+            particleArray[i].update();
+        }
+        // sunray();
+        sunray();
+        connectPossible();
+    }
+
+    //mouse out event
+    window.addEventListener('mouseout',
+        function() {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        }
+    );
+
+    getParticles();
+    animate();
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const btns = document.querySelectorAll("[data-play]");
+        for (let i = 0; i < btns.length; i++) {
+            btns[i].addEventListener("click", () => {
+                playMusic();
+            });
+        }
+    });
+
+    function playMusic() {
+        const music = new Audio(
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/161676/music.mp3"
+        );
+
+        music.addEventListener("canplay", () => {
+            music.play();
+        });
+    }
+    </script>
 </body>
 </html>
-        </div>
-             <!-- ... other HTML content ... -->
-
-<!-- Music Section -->
-<div id="music-section" style="display: none">
-    <button id="music-button" data-play>Play Music</button>
-</div>
-
-<!-- ... other HTML content ... -->
-
-<script>
-    document.getElementById('sudoku-button').addEventListener('click', function () {
-        document.getElementById('sudoku-game').style.display = 'block';
-        document.getElementById('math-game').style.display = 'none';
-        document.getElementById('particle-animation').style.display = 'none';
-    });
-
-    document.getElementById('math-game-button').addEventListener('click', function () {
-        document.getElementById('sudoku-game').style.display = 'none';
-        document.getElementById('math-game').style.display = 'block';
-        document.getElementById('particle-animation').style.display = 'none';
-    });
-
-    document.getElementById('particle-button').addEventListener('click', function () {
-        document.getElementById('sudoku-game').style.display = 'none';
-        document.getElementById('math-game').style.display = 'none';
-        document.getElementById('particle-animation').style.display = 'block';
-    });
-
-    document.getElementById('music-button').addEventListener('click', function () {
-        document.getElementById('sudoku-game').style.display = 'none';
-        document.getElementById('math-game').style.display = 'none';
-        document.getElementById('particle-animation').style.display = 'none';
-        document.getElementById('music-section').style.display = 'block';
-    });
-</script>
